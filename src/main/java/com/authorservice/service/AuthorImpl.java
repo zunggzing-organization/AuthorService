@@ -4,6 +4,8 @@ import com.authorservice.VO.Book;
 import com.authorservice.VO.ResponseTemplateVO;
 import com.authorservice.entity.Author;
 import com.authorservice.repository.AuthorRepository;
+import io.github.resilience4j.retry.annotation.Retry;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class AuthorImpl implements AuthorService {
     @Autowired
     private AuthorRepository authorRepository;
@@ -31,6 +34,7 @@ public class AuthorImpl implements AuthorService {
     }
 
     @Override
+    @Retry(name = "basic")
     public Author saveAuthor(Author author) {
         return authorRepository.save(author);
     }
