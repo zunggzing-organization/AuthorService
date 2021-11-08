@@ -4,6 +4,8 @@ import com.authorservice.VO.Book;
 import com.authorservice.VO.ResponseTemplateVO;
 import com.authorservice.entity.Author;
 import com.authorservice.repository.AuthorRepository;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +55,7 @@ public class AuthorImpl implements AuthorService {
     }
 
     @Override
+    @RateLimiter(name = "basic", fallbackMethod = "fallMethodRateLimiter")
     public ResponseTemplateVO getAuthorWithBook(Long id) {
         ResponseTemplateVO responseTemplateVO = new ResponseTemplateVO();
         Author author = authorRepository.findById(id).get();
@@ -61,6 +64,10 @@ public class AuthorImpl implements AuthorService {
                 Book.class);
         responseTemplateVO.setBook(book);
         return responseTemplateVO;
+    }
+    public Author fallMethodRateLimiter(Long id, RequestNotPermitted rnp) {
+        log.info("Request Not Permitted By Many Request");
+        return null;
     }
 
 }
