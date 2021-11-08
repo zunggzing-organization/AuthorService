@@ -5,12 +5,14 @@ import com.authorservice.VO.ResponseTemplateVO;
 import com.authorservice.entity.Author;
 import com.authorservice.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/authors")
+@RefreshScope
 public class AuthorRestController {
     @Autowired
     private AuthorService authorService;
